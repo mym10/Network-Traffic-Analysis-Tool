@@ -26,8 +26,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
     // Heatmap Data Structure
     let heatmapData = [];
-    const heatmapInterval = 5;
-    const maxTime = 60; 
+    const heatmapInterval = 10; // seconds
+    const maxTime = 60; // seconds
     const numIntervals = Math.ceil(maxTime / heatmapInterval);
 
     for (let i = 0; i < numIntervals; i++) {
@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         });
     }
 
-    //Histogram
+    // Histogram
     const ctx = document.getElementById('protocolChart').getContext('2d');
     const chart = new Chart(ctx, {
         type: 'bar',
@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         }
     });
 
-    //Heatmap
+    // Heatmap
     const htx = document.getElementById('heatmap').getContext('2d');
     const heatmap = new Chart(htx, {
         type: 'scatter', // Using scatter plot to simulate heatmap
@@ -89,10 +89,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                         text: 'Time (seconds)'
                     },
                     min: 0,
-                    max: maxTime,
-                    ticks: {
-                        stepSize: heatmapInterval // 1 unit = 5 seconds
-                    }
+                    max: maxTime
                 },
                 y: {
                     beginAtZero: true,
@@ -109,7 +106,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
         fetch('/start_capturing', { method: 'POST' })
             .then(response => response.text())
             .then(message => {
-                //alert(message);
                 startBtn.classList.add('disabled');
                 stopBtn.classList.remove('disabled');
                 downTXT.classList.add('disabled');
@@ -117,6 +113,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 packetInfoDiv.innerHTML = '';
                 filteredPackets = [];
                 capturedPackets = [];
+                heatmapData.forEach(dataPoint => dataPoint.y = 0); // Reset heatmap data
                 for (let key in protocolCounts) {
                     protocolCounts[key] = 0;
                 }
@@ -130,7 +127,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
         fetch('/stop_capturing', { method: 'POST' })
             .then(response => response.text())
             .then(message => {
-                //alert(message);
                 startBtn.classList.remove('disabled');
                 stopBtn.classList.add('disabled');
                 downTXT.classList.remove('disabled');
@@ -206,14 +202,10 @@ document.addEventListener('DOMContentLoaded', (event) => {
             updatePackageDisplay();
         }
 
-        updateHeatmap(packetInfo);
-
-        //const packetElement = document.createElement('div');
-        //packetElement.textContent = JSON.stringify(packetInfo, null, 2);
-        //packetInfoDiv.appendChild(packetElement);
+        updateHeatmap(packetInfo); // Update heatmap with new packet
     });
 
-    //Reapply filters when user clicks apply filter button
+    // Reapply filters when user clicks apply filter button
     applyFilterBtn.addEventListener('click', () => {
         filteredPackets = capturedPackets.filter(applyFilter);
         updatePackageDisplay();

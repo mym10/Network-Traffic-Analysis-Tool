@@ -6,10 +6,15 @@ body {
 
 #packet-info {
     border-radius: 5px;
-    max-height: 80vh; /* Set a maximum height */
+    /*height: 80vh;*/
+    max-height: 70vh; /* Set a maximum height */
+    min-height: 60vh;
     overflow-y: auto; /* Enable vertical scrolling */
     padding: 10px;
     border: 1px solid #ccc;
     background-color: #f9f9f9;
 }
 
+button {
+    font-weight:bolder!important;
+}
