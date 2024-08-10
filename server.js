@@ -10,6 +10,7 @@ const server = http.createServer(app);
 const io = socketIo(server);
 
 let packetCaptureProcess = null;
+let capturedPackets = [];
 
 // Serve static files
 app.use('/static', express.static(path.join(__dirname, 'static')));
@@ -22,6 +23,7 @@ app.get('/', (req, res) => {
 // Handle start capturing request
 app.post('/start_capturing', (req, res) => {
     if (!packetCaptureProcess) {
+        capturedPackets = [];
         packetCaptureProcess = spawn('python3', ['packet_capture.py']);
 
         packetCaptureProcess.stdout.on('data', (data) => {
@@ -29,10 +31,11 @@ app.post('/start_capturing', (req, res) => {
             packets.forEach(packet => {
                 try {
                     const packetInfo = JSON.parse(packet);
+                    capturedPackets.push(packetInfo);
                     io.emit('new_packet', packetInfo);
                 } catch (err) {
                     console.error('Error parsing packet data:', err);
-                }
+               }
             });
         });
 
@@ -56,6 +59,7 @@ app.post('/stop_capturing', (req, res) => {
     if (packetCaptureProcess) {
         process.kill(packetCaptureProcess.pid);
         packetCaptureProcess = null;
+        io.emit('capturing_stopped', capturedPackets); //send all the captured packets to client
         res.send('Stopped packet capturing.');
     } else {
         res.send('No packet capturing process running.');
