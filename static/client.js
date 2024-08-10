@@ -4,8 +4,16 @@ document.addEventListener('DOMContentLoaded', (event) => {
     const startBtn = document.getElementById('start-btn');
     const stopBtn = document.getElementById('stop-btn');
     const packetInfoDiv = document.getElementById('packet-info');
-    const downTXT = document.getElementById('down-txt-btn');
-    const downGraph = document.getElementById('down-graph-btn')
+    const downTXT = document.getElementById('down-txt-btn'); //download txt button
+    const downGraph = document.getElementById('down-graph-btn') //download img button
+    //filters---------
+    const filterSelect = document.getElementById('filters');
+    const filterInput = document.querySelector('input[aria-label="Search"]');
+    const applyFilterBtn = document.getElementById('apply-filter-btn');
+
+    let capturedPackets = [];
+    let filteredPackets = [];
+
     const protocolCounts = {
         'TCP': 0,
         'UDP': 0,
@@ -15,7 +23,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
         'ICMP': 0,
         'Other': 0
     };
-    const filter = document.getElementById('filters')
 
     const ctx = document.getElementById('protocolChart').getContext('2d');
     const chart = new Chart(ctx, {
@@ -49,6 +56,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 downTXT.classList.add('disabled');
                 downGraph.classList.add('disabled')
                 packetInfoDiv.innerHTML = '';
+                filteredPackets = [];
+                capturedPackets = [];
                 for (let key in protocolCounts) {
                     protocolCounts[key] = 0;
                 }
@@ -77,14 +86,67 @@ document.addEventListener('DOMContentLoaded', (event) => {
         window.location.href = '/download_graph';
     });
 
+    function applyFilter(packetInfo) {
+        const filterType = filterSelect.value;
+        const filterValue = filterInput.value.trim().toLowerCase();
+
+        if(!filterValue) return true; //if no filter is applied return all packets
+
+        switch (filterType) {
+            case 'protocol':
+                return packetInfo.protocol.toLowerCase() === filterValue;
+            case 'src':
+                return packetInfo.src.toLowerCase() === filterValue;
+            case 'dst':
+                return packetInfo.dst.toLowerCase() === filterValue;
+            case 'length':
+                return true;
+            default:
+                return true;
+        }
+    }
+
+    function updatePackageDisplay() {
+        packetInfoDiv.innerHTML=''
+        let packetsToDisplay = filteredPackets;
+
+        if(filterSelect.value === 'length') {
+            packetsToDisplay.sort((a, b) => b.length - a.length);
+        }
+
+        packetsToDisplay.forEach(packetInfo => {
+            const packetElement = document.createElement('div');
+            packetElement.textContent = JSON.stringify(packetInfo, null, 2);
+            packetInfoDiv.appendChild(packetElement);
+        });
+    }
+
+    socket.on('capturing_stopped', (packets) => {
+        capturedPackets = packets; // Store all captured packets
+        filteredPackets = packets.filter(applyFilter);
+        updatePackageDisplay();
+    });
 
     socket.on('new_packet', (packetInfo) => {
         protocolCounts[packetInfo.protocol] += 1;
         chart.data.datasets[0].data = Object.values(protocolCounts);
         chart.update();
 
-        const packetElement = document.createElement('div');
-        packetElement.textContent = JSON.stringify(packetInfo, null, 2);
-        packetInfoDiv.appendChild(packetElement);
+        capturedPackets.push(packetInfo);
+
+        if(applyFilter(packetInfo)) {
+            filteredPackets.push(packetInfo);
+            updatePackageDisplay();
+        }
+
+        //const packetElement = document.createElement('div');
+        //packetElement.textContent = JSON.stringify(packetInfo, null, 2);
+        //packetInfoDiv.appendChild(packetElement);
+    });
+
+    //Reapply filters when user clicks apply filter button
+    applyFilterBtn.addEventListener('click', () => {
+        filteredPackets = capturedPackets.filter(applyFilter);
+        updatePackageDisplay();
     });
 });
