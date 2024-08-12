@@ -1,4 +1,0 @@
-{"time": 1723435645.9403331, "src": "20.189.173.26", "dst": "10.0.2.15", "protocol": "HTTPS", "sport": 443, "dport": 57536, "length": 157}
-{"time": 1723435645.9981139, "src": "10.0.2.15", "dst": "20.189.173.26", "protocol": "HTTPS", "sport": 57536, "dport": 443, "length": 54}
-{"time": 1723435648.814827, "src": "10.0.2.15", "dst": "142.250.195.163", "protocol": "HTTP", "sport": 59608, "dport": 80, "length": 54}
-{"time": 1723435648.8169758, "src": "142.250.195.163", "dst": "10.0.2.15", "protocol": "HTTP", "sport": 80, "dport": 59608, "length": 60}
