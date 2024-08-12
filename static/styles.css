@@ -2,8 +2,6 @@ body {
     font-family: Arial, sans-serif;
 }
 
-
-
 #packet-info {
     border-radius: 5px;
     /*height: 80vh;*/
@@ -17,4 +15,15 @@ body {
 
 button {
     font-weight:bolder!important;
+}
+
+#big-box {
+    grid-column-start: 2;
+    grid-column-end: span col3-start;
+}
+
+#protocol-interaction-map {
+    grid-row:auto;
+    grid-column-start: 2;
+    grid-column-end: span col2-start;
 }

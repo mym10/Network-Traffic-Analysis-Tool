@@ -36,18 +36,22 @@
     </header>
 
     <div class="container-fluid pb-3">
-        <div class="d-grid gap-3" style="grid-template-columns: 1fr 2fr;">
+        <div class="d-grid gap-3" style="grid-template-columns: 1fr 1fr 1fr;">
             <div class="bg-body-tertiary border rounded-3 p-3">
                 <h5>Real-time Protocol Histogram</h5>
                 <canvas id="protocolChart" width="400" height="400"></canvas>
             </div>
-            <div class="bg-body-tertiary border rounded-3 p-3">
+            <div class="bg-body-tertiary border rounded-3 p-3" id="big-box">
                 <h5>Packet Information</h5>
                 <div id="packet-info"></div>
             </div>
             <div class="bg-body-tertiary border rounded-3 p-3">
                 <h5>Heatmap of Traffic Intensity</h5>
                 <canvas id="heatmap" width="400" height="400"></canvas>
+            </div>
+            <div class="bg-body-tertiary border rounded-3 p-3">
+                <h5>Protocol Interaction map</h5>
+                <canvas id="protocol-interaction-map" width="400" height="400"></canvas>
             </div>
         </div>
     </div>
