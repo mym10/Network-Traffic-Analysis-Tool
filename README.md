@@ -14,7 +14,7 @@ This project is a **Real-Time Network Traffic Analyzer** that captures network p
 
 ## Tech Stack
 
-- **Frontend:** HTML, CSS (Bootstrap), JavaScript (Socket.IO)
+- **Frontend:** HTML, CSS (Bootstrap), JavaScript (Socket.IO), D3.js
 - **Backend:** Node.js, Express, Socket.IO
 - **Packet Capture:** Python (Scapy)
 - **Deployment:** Kali Linux
@@ -30,7 +30,7 @@ This project is a **Real-Time Network Traffic Analyzer** that captures network p
 ### Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/network-traffic-analyzer.git
+git clone https://github.com/mym10/Network-Traffic-Analysis-Tool.git
 cd network-traffic-analyzer
 ```
 
